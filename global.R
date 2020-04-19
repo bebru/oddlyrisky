@@ -1,0 +1,10 @@
+library(here)
+library(usethis)
+library(tidyverse)
+library(broom)
+library(margins)
+library(shiny)
+library(patchwork)
+library(glue)
+
+source(here("funs.R"))

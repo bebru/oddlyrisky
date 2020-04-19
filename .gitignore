@@ -1,0 +1,11 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# files for personal use
+notes.Rmd
+
+# output files
+*.html
+*.pdf
