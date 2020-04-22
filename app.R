@@ -1,5 +1,5 @@
 
-source(here::here("init.R"))
+source(here::here("global.R"))
 
 # Define UI
 ui <- fluidPage(
@@ -53,6 +53,11 @@ server <- function(input, output) {
         # generate data
         ds <- sim_ds(n = n, x = input$prob_V1, b0 = b0, b = b)
         mod <- glm( y~., data=ds, family="binomial")
+        
+        # prevalence
+        tbl_prev <- tally_discrete(ds)
+        plt_prev <- plot_prev(tbl_prev)
+        
         # OR
         mod_or <- calc_or(mod = mod)
         plt_or <- plot_or(mod_or)
@@ -61,7 +66,7 @@ server <- function(input, output) {
         plt_ame <- plot_ame(mod_ame)
         
         # patch plots together
-        plt_or / plt_ame
+        plt_prev / plt_or / plt_ame
     })
     
 }

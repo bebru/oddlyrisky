@@ -8,3 +8,5 @@ library(patchwork)
 library(glue)
 
 source(here("funs.R"))
+
+theme_set(theme_bw())
