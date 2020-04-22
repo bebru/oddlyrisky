@@ -67,16 +67,24 @@ table(ds$x1)
 DescTools::Desc(y ~ x1, data = ds)
 
 # prevalence of predictors conditional on outcome
-# grp_raw <- 
-  ds %>%
-  select(y, ind_int, ind_fct, ind_chr) %>% 
-  pivot_longer(names_to = "var", values_to = "val", -y) %>% 
-  count(y, var, val) %>% 
-  group_by(var, val) %>% 
-  mutate(nn = sum(n), pct = n/nn) %>% 
-  ungroup() %>% 
-  filter(y != 0)
 
+tbl_cond <- tally_discrete_cond(ds)
+
+tbl_cond %>% 
+  ggplot(aes(x = factor(val), y = pct, color = factor(val))) + 
+  geom_linerange(aes(xmin = factor(val), ymin = 0, xmax = factor(val), ymax = pct), 
+                 color = "grey50") +
+  geom_point(aes(size = n)) +
+  scale_y_continuous(labels = scales::percent) +
+  scale_size(guide = NULL) +
+  facet_grid(rows = vars(var)) + 
+  coord_flip() + 
+  expand_limits(y = 1) + 
+  theme_bw() +
+  ggtitle(label = "Conditional prevalence", subtitle = "Prevalence of outcome, conditional on covariate")
+
+plot_prev_cond(tbl_cond)
+  
 
 # misc --------------------------------------------------------------------
 

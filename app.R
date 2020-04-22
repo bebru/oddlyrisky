@@ -11,14 +11,14 @@ ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
             sliderInput("prob_V1",
-                        "Probability of V1:",
+                        "Probability of x1:",
                         min = 0,
                         max = 1,
                         value = 0.8),
             sliderInput("coef_b0",
                         "Coefficient log(b0):",
                         min = 0,
-                        max = 1,
+                        max = 5,
                         value = 0.5,
                         step = 0.1),
             sliderInput("coef_b1",
@@ -58,6 +58,10 @@ server <- function(input, output) {
         tbl_prev <- tally_discrete(ds)
         plt_prev <- plot_prev(tbl_prev)
         
+        # conditional prevalence
+        tbl_prev_cond <- tally_discrete_cond(ds)
+        plt_prev_cond <- plot_prev_cond(tbl_prev_cond)
+        
         # OR
         mod_or <- calc_or(mod = mod)
         plt_or <- plot_or(mod_or)
@@ -66,7 +70,7 @@ server <- function(input, output) {
         plt_ame <- plot_ame(mod_ame)
         
         # patch plots together
-        plt_prev / plt_or / plt_ame
+        plt_prev / plt_prev_cond / plt_or / plt_ame
     })
     
 }

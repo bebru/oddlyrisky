@@ -94,7 +94,42 @@ plot_prev <- function(dta){
     coord_flip() + 
     expand_limits(y = 1) + 
     theme_bw() +
-    ggtitle(label = "Crude prevalence", subtitle = "Outcome and covariates, w/ and w/o grouping per ourcome")
+    ggtitle(label = "Crude prevalence", subtitle = "Outcome and covariates, w/ and w/o grouping per outcome")
+}
+
+
+# prevalence of outcome conditional on covariates
+tally_discrete_cond <- function(dta) {
+  
+  # discrete variables to tally
+  ind_int <- dta %>% select(-y) %>% map_lgl(is.integer) %>% which()
+  ind_fct <- dta %>% select(-y) %>% map_lgl(is.factor) %>% which()
+  ind_chr <- dta %>% select(-y) %>% map_lgl(is.character) %>% which()
+  
+  dta %>%
+    select(y, ind_int, ind_fct, ind_chr) %>% 
+    pivot_longer(names_to = "var", values_to = "val", -y) %>% 
+    count(y, var, val) %>% 
+    group_by(var, val) %>% 
+    mutate(nn = sum(n), pct = n/nn) %>% 
+    ungroup() %>% 
+    filter(y != 0)
+}
+
+# plot prevalences of covariates and outcome as lolliplot graph
+plot_prev_cond <- function(dta){
+  dta %>% 
+    ggplot(aes(x = factor(val), y = pct)) + 
+    geom_linerange(aes(xmin = factor(val), ymin = 0, xmax = factor(val), ymax = pct), 
+                   color = "grey50") +
+    geom_point(aes(size = n)) +
+    scale_y_continuous(labels = scales::percent) +
+    scale_size(guide = NULL) +
+    facet_grid(rows = vars(var)) + 
+    coord_flip() + 
+    expand_limits(y = 1) + 
+    theme_bw() +
+    ggtitle(label = "Conditional prevalence", subtitle = "Prevalence of outcome, conditional on covariate")
 }
 
 # estimation --------------------------------------------------------------
